@@ -44,7 +44,7 @@ message("  CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 message("  CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
 message("----------------------------------")
 
-configure_file(${PROJECT_SOURCE_DIR}/libgo/common/cmake_config.h.in ${PROJECT_SOURCE_DIR}/libgo/common/cmake_config.h)
+configure_file(${PROJECT_SOURCE_DIR}/src/libgo/common/cmake_config.h.in ${PROJECT_SOURCE_DIR}/src/libgo/common/cmake_config.h)
 message("----------------------------------")
 
 if (UNIX)
@@ -61,10 +61,6 @@ elseif (WIN32)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd /EHsc")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT /EHsc")
-
-    #set(CMAKE_ASM_SOURCE_FILE_EXTENSIONS asm)
-    #file(COPY ${PROJECT_SOURCE_DIR}/third_party/boost.context/libs/context/src/asm/make_x86_64_ms_pe_masm.asm DESTINATION ${PROJECT_SOURCE_DIR}/libgo/context)
-    #file(COPY ${PROJECT_SOURCE_DIR}/third_party/boost.context/libs/context/src/asm/jump_x86_64_ms_pe_masm.asm DESTINATION ${PROJECT_SOURCE_DIR}/libgo/context)
 endif()
 
 message("------------ Cxx flags -------------")
@@ -72,29 +68,29 @@ message("  CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_
 message("------------------------------------")
 
 include_directories(${PROJECT_SOURCE_DIR})
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/common CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/context CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/task CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/scheduler CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/sync CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/timer CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/cls CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/defer CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/pool CO_SRC_LIST)
-aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/debug CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/common CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/context CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/task CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/scheduler CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/sync CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/timer CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/cls CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/defer CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/pool CO_SRC_LIST)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/debug CO_SRC_LIST)
 
 if (NOT DISABLE_HOOK)
     if (UNIX)
-        aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/netio/unix CO_SRC_LIST)
+        aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/netio/unix CO_SRC_LIST)
     elseif (WIN32)
-	include_directories(${PROJECT_SOURCE_DIR}/libgo/netio/windows)
-        aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/netio/windows CO_SRC_LIST)
-	aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/context/fiber CO_SRC_LIST)
-	list(APPEND CO_SRC_LIST ${PROJECT_SOURCE_DIR}/libgo/netio/windows/xhook/xhook.cpp)
+	include_directories(${PROJECT_SOURCE_DIR}/src/libgo/netio/windows)
+        aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/netio/windows CO_SRC_LIST)
+	aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/context/fiber CO_SRC_LIST)
+	list(APPEND CO_SRC_LIST ${PROJECT_SOURCE_DIR}/src/libgo/netio/windows/xhook/xhook.cpp)
     endif()
 else()
-    aux_source_directory(${PROJECT_SOURCE_DIR}/libgo/netio/disable_hook CO_SRC_LIST)
+    aux_source_directory(${PROJECT_SOURCE_DIR}/src/libgo/netio/disable_hook CO_SRC_LIST)
 endif()
 
 set(TARGET "libgo")
@@ -108,13 +104,13 @@ set_target_properties("${STATIC_T}" PROPERTIES OUTPUT_NAME "${TARGET}")
 
 if (UNIX)
     install(TARGETS ${STATIC_T} LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/libgo/ DESTINATION "include/libgo" FILES_MATCHING PATTERN "*.h")
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/libgo/ DESTINATION "include/libgo" FILES_MATCHING PATTERN "*.h")
         #PATTERN "windows" EXCLUDE
 
-    add_library("${STATIC_HOOK}" STATIC "${PROJECT_SOURCE_DIR}/libgo/netio/unix/static_hook/static_hook.cpp")
+    add_library("${STATIC_HOOK}" STATIC "${PROJECT_SOURCE_DIR}/src/libgo/netio/unix/static_hook/static_hook.cpp")
 
     if (BUILD_DYNAMIC)
-        set(SHARED_T "libgo_dynamic")
+        set(SHARED_T "src/libgo_dynamic")
         add_library("${SHARED_T}" SHARED ${CO_SRC_LIST})
         set_target_properties("${SHARED_T}" PROPERTIES OUTPUT_NAME "${TARGET}")
         target_link_libraries("${SHARED_T}" ${LINK_LIBS} -ldl)
@@ -146,7 +142,7 @@ if (UNIX)
     )
 
     add_custom_target(uninstall
-        COMMAND rm ${CMAKE_INSTALL_PREFIX}/lib/liblibgo.a ${CMAKE_INSTALL_PREFIX}/lib/liblibgo.so ${CMAKE_INSTALL_PREFIX}/lib/liblibgo_main.a -f
+        COMMAND rm ${CMAKE_INSTALL_PREFIX}/lib/lib/libgo.a ${CMAKE_INSTALL_PREFIX}/lib/lib/libgo.so ${CMAKE_INSTALL_PREFIX}/lib/lib/libgo_main.a -f
         COMMAND rm ${CMAKE_INSTALL_PREFIX}/include/libgo -rf
     )
 
