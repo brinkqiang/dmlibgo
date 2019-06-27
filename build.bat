@@ -1,7 +1,7 @@
 
 rem - clone code
-rem git clone https://github.com/brinkqiang/libgo.git
-rem pushd libgo
+rem git clone https://github.com/brinkqiang/dmlibgo.git
+rem pushd dmlibgo
 rem git submodule update --init --recursive
 
 rmdir /S /Q build

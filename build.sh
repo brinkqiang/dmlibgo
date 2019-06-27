@@ -6,8 +6,8 @@
 #
 
 # - clone code
-# git clone https://github.com/brinkqiang/libgo.git
-# pushd libgo
+# git clone https://github.com/brinkqiang/dmlibgo.git
+# pushd dmlibgo
 # git submodule update --init --recursive
 #
 
