@@ -157,3 +157,5 @@ if (UNIX)
 elseif (WIN32)
     set_target_properties("${STATIC_T}" PROPERTIES COMPILE_FLAGS "/wd4819 /wd4267")
 endif()
+
+ExeImport("example" "libgo")
