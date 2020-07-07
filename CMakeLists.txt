@@ -118,7 +118,7 @@ if (UNIX)
     add_library("${STATIC_HOOK}" STATIC "${CMAKE_CURRENT_SOURCE_DIR}/src/libgo/netio/unix/static_hook/static_hook.cpp")
 
     if (BUILD_DYNAMIC)
-        set(SHARED_T "src/libgo_dynamic")
+        set(SHARED_T "libgo_dynamic")
         add_library("${SHARED_T}" SHARED ${CO_SRC_LIST})
         set_target_properties("${SHARED_T}" PROPERTIES OUTPUT_NAME "${TARGET}")
         target_link_libraries("${SHARED_T}" ${LINK_LIBS} -ldl)
