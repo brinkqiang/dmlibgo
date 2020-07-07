@@ -76,6 +76,9 @@ message("------------------------------------")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/boost.context)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/libgo)
+
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/libgo CO_SRC_LIST)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/libgo/common CO_SRC_LIST)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/libgo/context CO_SRC_LIST)
