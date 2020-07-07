@@ -23,11 +23,15 @@ void echo_server()
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     socklen_t len = sizeof(addr);
-    if (-1 == bind(accept_fd, (sockaddr*)&addr, len)) {
+
+    if (-1 == bind(accept_fd, (sockaddr*)&addr, len))
+    {
         fprintf(stderr, "bind error, please change the port value.\n");
         exit(1);
     }
-    if (-1 == listen(accept_fd, 5)) {
+
+    if (-1 == listen(accept_fd, 5))
+    {
         fprintf(stderr, "listen error.\n");
         exit(1);
     }
@@ -35,9 +39,13 @@ void echo_server()
 retry:
     // 阻塞的accept已被HOOK，等待期间切换执行其他协程。
     int sockfd = accept(accept_fd, (sockaddr*)&addr, &len);
-    if (sockfd == -1) {
+
+    if (sockfd == -1)
+    {
         if (EAGAIN == errno || EINTR == errno)
+        {
             goto retry;
+        }
 
         fprintf(stderr, "accept error:%s\n", strerror(errno));
         return ;
@@ -47,14 +55,22 @@ retry:
 retry_read:
     // 阻塞的read已被HOOK，等待期间切换执行其他协程。
     int n = read(sockfd, buf, sizeof(buf));
-    if (n == -1) {
+
+    if (n == -1)
+    {
         if (EAGAIN == errno || EINTR == errno)
+        {
             goto retry_read;
+        }
 
         fprintf(stderr, "read error:%s\n", strerror(errno));
-    } else if (n == 0) {
+    }
+    else if (n == 0)
+    {
         fprintf(stderr, "read eof\n");
-    } else {
+    }
+    else
+    {
         // echo
         // 阻塞的write已被HOOK，等待期间切换执行其他协程。
         ssize_t wn = write(sockfd, buf, n);
@@ -69,8 +85,10 @@ void client()
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
     // 阻塞的connect已被HOOK，等待期间切换执行其他协程。
-    if (-1 == connect(sockfd, (sockaddr*)&addr, sizeof(addr))) {
+    if (-1 == connect(sockfd, (sockaddr*)&addr, sizeof(addr)))
+    {
         fprintf(stderr, "connect error:%s\n", strerror(errno));
         exit(1);
     }
@@ -87,14 +105,22 @@ void client()
 retry_read:
     // 阻塞的read已被HOOK，等待期间切换执行其他协程。
     int n = read(sockfd, rcv_buf, sizeof(rcv_buf));
-    if (n == -1) {
+
+    if (n == -1)
+    {
         if (EAGAIN == errno || EINTR == errno)
+        {
             goto retry_read;
+        }
 
         fprintf(stderr, "read error:%s\n", strerror(errno));
-    } else if (n == 0) {
+    }
+    else if (n == 0)
+    {
         fprintf(stderr, "read eof\n");
-    } else {
+    }
+    else
+    {
         printf("recv [%d] %s\n", n, rcv_buf);
     }
 

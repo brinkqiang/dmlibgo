@@ -2,6 +2,7 @@
 #include <WinSock2.h>
 #include <Windows.h>
 #include <stdint.h>
+#include <corecrt_io.h>
 
 typedef int64_t ssize_t;
 
@@ -12,6 +13,6 @@ extern "C" {
 
     unsigned int sleep(unsigned int seconds);
 
-    int poll(struct pollfd *fds, unsigned long nfds, int timeout);
+    int poll(struct pollfd* fds, unsigned long nfds, int timeout);
 
 }
