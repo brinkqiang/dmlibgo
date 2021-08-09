@@ -9,11 +9,11 @@ namespace co {
 
     struct FiberScopedGuard
     {
-        FiberScopedGuard::FiberScopedGuard()
+        FiberScopedGuard()
         {
             GetTlsContext() = ConvertThreadToFiber(nullptr);
         }
-        FiberScopedGuard::~FiberScopedGuard()
+        ~FiberScopedGuard()
         {
             ConvertFiberToThread();
             GetTlsContext() = nullptr;
