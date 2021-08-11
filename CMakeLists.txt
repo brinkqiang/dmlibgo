@@ -122,6 +122,9 @@ set(STATIC_HOOK "static_hook")
 
 list(APPEND CO_SRC_LIST ${jump_asm_file})
 list(APPEND CO_SRC_LIST ${make_asm_file})
+
+message("CO_SRC_LIST: ${CO_SRC_LIST}")
+
 add_library("${STATIC_T}" STATIC ${CO_SRC_LIST})
 set_target_properties("${STATIC_T}" PROPERTIES OUTPUT_NAME "${TARGET}")
 
