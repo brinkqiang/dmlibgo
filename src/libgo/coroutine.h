@@ -1,4 +1,5 @@
 #pragma once
+#define __const__
 #include "common/config.h"
 #include "common/pp.h"
 #include "common/syntax_helper.h"
@@ -13,6 +14,7 @@
 #include "defer/defer.h"
 #include "debug/listener.h"
 #include "debug/debugger.h"
+//#include "netio/unix/errno_hook.h"
 
 #define LIBGO_VERSION 300
 
@@ -68,3 +70,4 @@ typedef ::co::CoTimer::TimerId co_timer_id;
 #define co_defer auto LIBGO_PP_CAT(__defer_, __COUNTER__) = ::co::__defer_op()-
 #define co_last_defer() ::co::GetLastDefer()
 #define co_defer_scope co_defer [&]
+

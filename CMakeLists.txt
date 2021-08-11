@@ -64,10 +64,14 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/libgo/common/cmake_config.h.in ${
 message("----------------------------------")
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -fPIC -fno-strict-aliasing -Wall ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -D__const__=  -fPIC -fno-strict-aliasing -Wall ${CMAKE_CXX_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
     set(CMAKE_CXX_FLAGS_RELEASE "-g -O3 -DNDEBUG")
 
+    execute_process(COMMAND "chmod" "+x" "${PROJECT_SOURCE_DIR}/third_party/select_asm.sh")
+    execute_process(COMMAND "chmod" "+x" "${PROJECT_SOURCE_DIR}/third_party/boost.context/bootstrap.sh")
+    execute_process(COMMAND "chmod" "+x" "${PROJECT_SOURCE_DIR}/third_party/boost.context/tools/build/src/engine/build.sh")
+	
     set(CMAKE_ASM_SOURCE_FILE_EXTENSIONS S)
     message("--> select asm source file, please wait about 5 seconds ...")
     execute_process(COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/select_asm.sh" "${CMAKE_CURRENT_SOURCE_DIR}" "jump" OUTPUT_VARIABLE jump_asm_file)

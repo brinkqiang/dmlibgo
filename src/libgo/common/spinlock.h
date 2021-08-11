@@ -11,11 +11,7 @@ struct BooleanFakeLock
 
     ALWAYS_INLINE void lock()
     {
-        while (!locked_)
-        {
-            locked_ = true;
-        }
-
+        while (!locked_) locked_ = true;
         DebugPrint(dbg_spinlock, "lock");
     }
 
@@ -27,16 +23,11 @@ struct BooleanFakeLock
     ALWAYS_INLINE bool try_lock()
     {
         bool ret = !locked_;
-
-        if (ret)
-        {
-            locked_ = true;
-        }
-
+        if (ret) locked_ = true;
         DebugPrint(dbg_spinlock, "trylock returns %s", ret ? "true" : "false");
         return ret;
     }
-
+    
     ALWAYS_INLINE void unlock()
     {
         assert(locked_);
@@ -48,9 +39,9 @@ struct BooleanFakeLock
 // 性能高于LFLock2
 struct LFLock
 {
-    std::atomic_flag flag = ATOMIC_FLAG_INIT;
+    std::atomic_flag flag;
 
-    LFLock()
+    LFLock() : flag{false}
     {
     }
 
@@ -63,33 +54,26 @@ struct LFLock
     {
         return !flag.test_and_set(std::memory_order_acquire);
     }
-
+    
     ALWAYS_INLINE void unlock()
     {
         flag.clear(std::memory_order_release);
     }
 };
 
-struct FakeLock
-{
+struct FakeLock {
     void lock() {}
-    bool is_lock()
-    {
-        return false;
-    }
-    bool try_lock()
-    {
-        return true;
-    }
+    bool is_lock() { return false; }
+    bool try_lock() { return true; }
     void unlock() {}
 };
 
 // atomic_bool可能不是无锁
 struct LFLock2
 {
-    std::atomic_bool state = false;
+    std::atomic_bool state;
 
-    LFLock2()
+    LFLock2() : state{false}
     {
     }
 
@@ -102,11 +86,10 @@ struct LFLock2
     {
         return !state.exchange(true, std::memory_order_acquire);
     }
-
+    
     ALWAYS_INLINE void unlock()
     {
-        if (!state.exchange(false, std::memory_order_release))
-        {
+        if (!state.exchange(false, std::memory_order_release)) {
             throw std::logic_error("libgo.spinlock unlock exception: state == false");
         }
     }
