@@ -12,7 +12,9 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-
+#ifdef _WIN32
+#include <corecrt_io.h>
+#endif
 static const uint16_t port = 43333;
 
 void echo_server()
