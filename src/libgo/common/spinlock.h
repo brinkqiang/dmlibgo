@@ -39,9 +39,9 @@ struct BooleanFakeLock
 // 性能高于LFLock2
 struct LFLock
 {
-    std::atomic_flag flag;
+    std::atomic_flag flag = ATOMIC_FLAG_INIT;
 
-    LFLock() : flag{false}
+    LFLock()
     {
     }
 
