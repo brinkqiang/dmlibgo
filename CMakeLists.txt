@@ -39,7 +39,7 @@ else()
 endif()
 
 option(DISABLE_HOOK "disable hook" OFF)
-option(BUILD_DYNAMIC "build dynamic hook" ON)
+option(BUILD_DYNAMIC "build dynamic hook" OFF)
 
 if (DISABLE_HOOK)
     set(ENABLE_HOOK 0)
