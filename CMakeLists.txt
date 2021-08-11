@@ -8,6 +8,11 @@ INCLUDE(cmake/ModuleImport.cmake)
 INCLUDE(cmake/ModuleCompileOptions.cmake)
 ModuleSetCompileOptions()
 
+IF(UNIX)
+    find_package(Boost COMPONENTS context REQUIRED)
+    include_directories(${Boost_INCLUDE_DIRS})
+ENDIF(UNIX)
+
 enable_language(C ASM)
 
 if (CMAKE_BUILD_TYPE)
@@ -160,4 +165,8 @@ elseif (WIN32)
     set_target_properties("${STATIC_T}" PROPERTIES COMPILE_FLAGS "/wd4819 /wd4267")
 endif()
 
+IF(WIN32)
 ExeImport("example" "libgo")
+ELSE(UNIX)
+ExeImport("example" "libgo;${Boost_LIBRARIES}")
+ENDIF(WIN32)
