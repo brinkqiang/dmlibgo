@@ -6,6 +6,8 @@
  * 结合boost.asio, 使网络编程变得更加简单.
  * 如果你不喜欢boost.asio, 这个例子可以跳过不看.
 ************************************************/
+#ifdef HAS_BOOST
+
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
 #include "coroutine.h"
@@ -35,7 +37,7 @@ void echo_server(tcp::endpoint const& addr)
             return;
         }
 
-        go [s]{
+        go[s]{
             char buf[1024];
             error_code ec;
             auto n = s->read_some(buffer(buf), ec);
@@ -91,8 +93,8 @@ int main()
 
     for (int i = 0; i < 5; ++i) {
         tcp::endpoint addr(address::from_string("127.0.0.1"), port + i);
-        go [addr]{ echo_server(addr); };
-        go [addr]{ client(addr); };
+        go[addr]{ echo_server(addr); };
+        go[addr]{ client(addr); };
     }
 
     // 200ms后安全退出
@@ -103,3 +105,10 @@ int main()
     return 0;
 }
 
+#else
+int main(int argc, char** argv)
+{
+    return 0;
+}
+
+#endif

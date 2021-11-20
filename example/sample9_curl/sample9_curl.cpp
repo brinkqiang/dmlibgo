@@ -4,22 +4,25 @@
  * 我们再来看一个有实用价值的例子：
  * 基于curl同步调用做的HTTP性能测试工具。
 ************************************************/
+
+#ifdef HAS_CURL
+
 #include <chrono>
 #include <boost/thread.hpp>
 #include <curl/curl.h>
 #include "coroutine.h"
 #include "win_exit.h"
 
-static std::atomic<int> g_ok{0}, g_error{0};
+static std::atomic<int> g_ok{ 0 }, g_error{ 0 };
 
-size_t curl_fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+size_t curl_fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream)
 {
     return size * nmemb;
 }
 
 void request_once(const char* url, int i)
 {
-    CURL *curl = curl_easy_init();
+    CURL* curl = curl_easy_init();
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
@@ -33,8 +36,9 @@ void request_once(const char* url, int i)
         }
 
         curl_easy_cleanup(curl);
-    } else {
-        go [=]{ request_once(url, i); };
+    }
+    else {
+        go[=]{ request_once(url, i); };
     }
 }
 
@@ -57,11 +61,11 @@ int main(int argc, char** argv)
 
     // 创建N个协程
     for (int i = 0; i < concurrency; ++i)
-        go [=]{ request_once(argv[1], i); };
+        go[=]{ request_once(argv[1], i); };
 
-    go []{ 
+    go[]{
         for (;;) {
-            show_status(); 
+            show_status();
             sleep(1);
         }
     };
@@ -71,3 +75,10 @@ int main(int argc, char** argv)
     return 0;
 }
 
+#else
+int main(int argc, char** argv)
+{
+    return 0;
+}
+
+#endif
