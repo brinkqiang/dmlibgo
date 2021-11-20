@@ -16,7 +16,7 @@ IF(UNIX)
     find_package(Boost COMPONENTS context REQUIRED)
     include_directories(${Boost_INCLUDE_DIRS})
 
-    find_package(curl REQUIRED)
+    find_package(curl config REQUIRED)
     include_directories(${Curl_INCLUDE_DIRS})
 ENDIF(UNIX)
 
